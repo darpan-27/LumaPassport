@@ -1,41 +1,38 @@
-const canvas = document.getElementById("photoCanvas");
-const ctx = canvas.getContext("2d");
-let isImageLoaded = false;
-let baseImageData = null;
+const upload = document.getElementById('upload');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const downloadBtn = document.getElementById('downloadBtn');
 
-// [Existing Event Listeners for image loading, brush, etc. here...]
+// Set target Passport size (Standard 2x2 inches at 300 DPI)
+const TARGET_SIZE = 600; 
 
-function applyPassportBackground(color) {
-    if (!isImageLoaded) return;
-    ctx.globalCompositeOperation = 'destination-over';
-    ctx.fillStyle = (color === 'blue') ? '#4a90e2' : '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.globalCompositeOperation = 'source-over';
-    baseImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-}
+upload.addEventListener('change', (e) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+            canvas.width = TARGET_SIZE;
+            canvas.height = TARGET_SIZE;
+            
+            // Draw white background
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Center and scale image
+            const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
+            const x = (canvas.width / 2) - (img.width / 2) * scale;
+            const y = (canvas.height / 2) - (img.height / 2) * scale;
+            
+            ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+        };
+        img.src = event.target.result;
+    };
+    reader.readAsDataURL(e.target.files[0]);
+});
 
-function cropToPassport() {
-    if (!isImageLoaded) return;
-    const ratio = 3.5 / 4.5;
-    const newWidth = canvas.height * ratio;
-    const offsetX = (canvas.width - newWidth) / 2;
-    const croppedData = ctx.getImageData(offsetX, 0, newWidth, canvas.height);
-    canvas.width = newWidth; canvas.height = canvas.height;
-    ctx.putImageData(croppedData, 0, 0);
-    baseImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-}
-
-function downloadPrintSheet() {
-    if (!isImageLoaded) return;
-    const printCanvas = document.createElement('canvas');
-    printCanvas.width = 1200; printCanvas.height = 1800;
-    const pCtx = printCanvas.getContext('2d');
-    pCtx.fillStyle = "#ffffff"; pCtx.fillRect(0, 0, printCanvas.width, printCanvas.height);
-    for(let i = 0; i < 6; i++) {
-        pCtx.drawImage(canvas, (i % 2) * 600 + 50, Math.floor(i / 2) * 600 + 50, 500, 650);
-    }
-    const link = document.createElement("a");
-    link.download = "Passport_Sheet.jpg";
-    link.href = printCanvas.toDataURL("image/jpeg");
+downloadBtn.addEventListener('click', () => {
+    const link = document.createElement('a');
+    link.download = 'luma-passport-photo.jpg';
+    link.href = canvas.toDataURL('image/jpeg', 1.0);
     link.click();
-}
+});
