@@ -1,18 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="gu">
 <head>
+    <meta charset="UTF-8">
+    <title>AI Passport Maker</title>
     <link rel="stylesheet" href="style.css">
-    <title>AI Passport Photo Maker</title>
 </head>
 <body>
     <div class="container">
-        <h2>Passport Photo Generator</h2>
-        <input type="file" id="upload" accept="image/*">
-        <div id="canvas-container">
-            <canvas id="canvas"></canvas>
-        </div>
-        <button onclick="downloadSheet()">Download Print Sheet</button>
+        <h1>AI Passport Photo Maker</h1>
+        <input type="file" id="imageUpload" accept="image/*">
+        <br><br>
+        <canvas id="outputCanvas"></canvas>
+        <br>
+        <button onclick="printSheet()">Download/Print Sheet</button>
     </div>
+
+    <!-- TensorFlow.js Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix"></script>
     <script src="app.js"></script>
