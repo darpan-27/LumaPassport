@@ -1,4 +1,4 @@
-body { font-family: sans-serif; text-align: center; padding: 20px; }
-#canvas-container { margin: 20px auto; border: 1px solid #ccc; width: fit-content; }
-canvas { display: block; max-width: 100%; }
-button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; margin-top: 10px; }
+body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; }
+.container { padding: 20px; }
+#outputCanvas { border: 2px solid #333; margin-top: 20px; max-width: 100%; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+button { padding: 15px 30px; font-size: 16px; background: #28a745; color: white; border: none; cursor: pointer; margin-top: 10px; }
