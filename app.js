@@ -1,38 +1,29 @@
 const upload = document.getElementById('upload');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-const downloadBtn = document.getElementById('downloadBtn');
 
-// Set target Passport size (Standard 2x2 inches at 300 DPI)
-const TARGET_SIZE = 600; 
-
-upload.addEventListener('change', (e) => {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        const img = new Image();
-        img.onload = () => {
-            canvas.width = TARGET_SIZE;
-            canvas.height = TARGET_SIZE;
-            
-            // Draw white background
-            ctx.fillStyle = "white";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Center and scale image
-            const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
-            const x = (canvas.width / 2) - (img.width / 2) * scale;
-            const y = (canvas.height / 2) - (img.height / 2) * scale;
-            
-            ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
-        };
-        img.src = event.target.result;
-    };
-    reader.readAsDataURL(e.target.files[0]);
+upload.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    const img = await createImageBitmap(file);
+    
+    // Canvas set passport size (35mm x 45mm)
+    canvas.width = 350; 
+    canvas.height = 450;
+    
+    // 1. Background Change (White)
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw Image
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    
+    // Note: Actual AI background removal needs specialized API 
+    // like Remove.bg API or BodyPix library.
 });
 
-downloadBtn.addEventListener('click', () => {
+function downloadSheet() {
     const link = document.createElement('a');
-    link.download = 'luma-passport-photo.jpg';
-    link.href = canvas.toDataURL('image/jpeg', 1.0);
+    link.download = 'passport_sheet.png';
+    link.href = canvas.toDataURL();
     link.click();
-});
+}
